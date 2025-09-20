@@ -14,7 +14,8 @@
 
 В Visual Studio Code могут возникнуть проблемы с автоподсветкой из-за возможного несовпадения версий JVM, используемых VSCode и в самом проекте. Поскольку в нашем проекте используется ```Java 21```, необходимо указать путь к ней в файлах окружения ```.vscode```.
 
-```launch.json
+<b>launch.json</b>
+```json
 {
     "version": "0.2.0",
     "configurations": [
@@ -29,7 +30,8 @@
 }
 ```
 
-```settings.json
+<b>settings.json</b>
+```json
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "kotlin.compiler.jvm.target": "21",
