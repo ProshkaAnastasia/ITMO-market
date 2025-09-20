@@ -7,13 +7,11 @@ COPY build.gradle.kts settings.gradle.kts ./
 COPY gradle ./gradle
 COPY src ./src
 
-# Собираем приложение
 RUN gradle build --no-daemon --stacktrace -x test
 
 # Runtime stage
 FROM openjdk:21-jdk-slim AS runtime
 
-# Создаем пользователя для безопасности
 RUN addgroup --system --gid 1001 appgroup && \
     adduser --system --uid 1001 --gid 1001 appuser
 

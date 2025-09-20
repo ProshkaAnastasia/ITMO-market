@@ -9,6 +9,7 @@ plugins {
 group = "itmo"
 version = "0.0.1-SNAPSHOT"
 description = "ITMO-market MVP"
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 java {
 	toolchain {
