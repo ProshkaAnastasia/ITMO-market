@@ -1,0 +1,96 @@
+.loginContainer {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #a0c4ff, #bdb2ff);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.loginForm {
+    background: white;
+    padding: 32px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 15px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 20px 0;
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.submitButton {
+    padding: 12px;
+    background-color: #667eea;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    grid-column: 1 / -1;
+}
+
+.submitButton:hover {
+    background-color: #5a67d8;
+}
+
+.links {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    margin-top: 10px;
+    grid-column: 1 / -1;
+}
+
+.link {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+    justify-self: center;
+}
+
+.link:hover {
+    color: #5a67d8;
+}
+
+.error {
+    color: #e53e3e;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+    grid-column: 1 / -1;
+}

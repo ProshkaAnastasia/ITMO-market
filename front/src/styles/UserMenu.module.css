@@ -1,0 +1,82 @@
+.userMenuWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.iconLink {
+    color: black;
+    position: relative;
+    text-decoration: none;
+}
+
+.menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 260px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 14px 16px;
+    border-radius: 8px;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.menuVisible {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+/* Общие стили кнопок и ссылок в меню */
+.menuButton {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* Стили для ссылки */
+.loginButton {
+    background-color: #007acc;
+    color: white;
+    text-decoration: none;
+}
+
+.loginButton:hover {
+    background-color: #005fa3;
+}
+
+/* Стили для кнопки выхода */
+.logoutButton {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+}
+
+.logoutButton:hover {
+    background-color: #c53030;
+}
+
+.registerText {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+}
+
+.registerLink {
+    color: #007acc;
+    text-decoration: underline;
+}
+
+.registerLink:hover {
+    color: #005fa3;
+}

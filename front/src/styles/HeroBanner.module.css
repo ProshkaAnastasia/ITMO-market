@@ -1,0 +1,82 @@
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: 350px;
+    overflow: hidden;
+    transition: background-color 1s ease;
+}
+
+
+.textBlock {
+    padding-right: 20px;
+    position: relative;
+    color: #333;
+    user-select: none;
+}
+
+
+.text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.slidesBlock {
+    flex: 2;
+    position: relative;
+    height: 100%;
+    max-width: 600px;
+}
+
+.next, .leave, .active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s ease, opacity 1s ease;
+}
+
+.next {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.active {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 2;
+    pointer-events: auto;
+}
+
+.leave {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
