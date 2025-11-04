@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/OrderView.module.css';
+import {ordersApi} from "../api/ordersApi";
 
 interface CartItem {
     id: number;
@@ -35,37 +36,48 @@ const OrderView: React.FC<OrderViewProps> = ({
     const [addressError, setAddressError] = useState('');
 
     useEffect(() => {
-        setLoading(true);
-        setError(false);
-        async function fetchData() {
+        const fetchData = async () => {
+            setLoading(true);
+            setError(false);
             try {
-                await new Promise(res => setTimeout(res, 1000));
-                // Пример: если orderId === undefined — эмулируем пустой ответ
-                // для cart — пустая корзина, для orderDetails — ошибка
-                if (orderId === undefined) {
-                    if (mode === 'cart') {
-                        setItems([]); // пустая корзина
-                        setLoading(false);
-                        return;
-                    } else {
-                        throw new Error('No order');
-                    }
+                if (mode === 'cart') {
+                    // Загружаем текущую корзину
+                    const cart = await ordersApi.getCart();
+                    // Преобразуем OrderDTO в CartItem
+                    const items: CartItem[] = cart.items.map(item => ({
+                        id: item.productId,
+                        name: '', // TODO: загрузить название товара
+                        image: '',
+                        price: 0,
+                        quantity: item.quantity,
+                    }));
+                    setItems(items);
+                    setAddress(cart.deliveryAddress || '');
+                } else if (mode === 'orderDetails' && orderId) {
+                    // Загружаем детали заказа
+                    const order = await ordersApi.getOrder(orderId.toString());
+                    const items: CartItem[] = order.items.map(item => ({
+                        id: item.productId,
+                        name: '',
+                        image: '',
+                        price: 0,
+                        quantity: item.quantity,
+                    }));
+                    setItems(items);
+                    setAddress(order.deliveryAddress);
+                } else {
+                    throw new Error('Invalid mode');
                 }
-                // Фиктивные данные для успешного запроса
-                const fetchedItems: CartItem[] = [
-                    { id: 1, name: 'Товар 1', image: '/assets/images/product1.jpg', price: 1000, quantity: 2 },
-                    { id: 2, name: 'Товар 2', image: '/assets/images/product2.jpg', price: 1500, quantity: 1 },
-                ];
-                setItems(fetchedItems);
-                setLoading(false);
-            } catch {
+            } catch (err) {
+                console.error('Failed to fetch order data:', err);
                 setError(true);
-                setItems([]);
+            } finally {
                 setLoading(false);
             }
-        }
+        };
+
         fetchData();
-    }, [orderId, mode]);
+    }, [mode, orderId]);
 
     const totalSum = error ? 0 : items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 

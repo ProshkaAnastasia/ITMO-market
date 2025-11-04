@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/Shop.module.css';
 import ProductGridPageable, { Product } from '../components/ProductGridPageable';
+import { productsApi } from '../api/productsApi';
+import { PaginatedResponse, ProductDTO, ShopDTO } from '../types/dto';
+import { useAuth } from '../context/AuthContext';
 
 interface ShopData {
     id: string;
@@ -12,16 +15,14 @@ interface ShopData {
 
 const Shop: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-
-    const isModerator = true;
-    const isSeller = true;
+    const { user } = useAuth();
 
     const [shop, setShop] = useState<ShopData | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [descEditing, setDescEditing] = useState(false);
-    const [descDraft, setDescDraft] = useState('');
+
+    const isOwner = user?.id === shop?.id; // Упрощенная проверка
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,102 +30,71 @@ const Shop: React.FC = () => {
                 setLoading(true);
                 setError(false);
 
-                await new Promise(res => setTimeout(res, 1000));
                 if (!id) throw new Error('Shop ID missing');
 
+                // TODO: Получить данные магазина из API
+                // const shopData = await shopsApi.getShop(id);
+                // Пока используем mock
                 setShop({
                     id,
                     name: 'Магазин ИТМО',
-                    description: 'Лучший магазин сувениров и мерча ИТМО. Мы рады предложить качественные и уникальные товары для всех посетителей нашего магазина.',
+                    description: 'Лучший магазин сувениров и мерча ИТМО.',
                     avatarUrl: '/assets/images/shop_avatar.jpg',
                 });
-                setDescDraft('Лучший магазин сувениров и мерча ИТМО. Мы рады предложить качественные и уникальные товары для всех посетителей нашего магазина.');
 
-                const productsData: Product[] = [];
-                for (let i = 1; i <= 50; i++) {
-                    productsData.push({
-                        id: i,
-                        name: `Товар #${i}`,
-                        price: Math.round(500 + Math.random() * 1500),
-                        image: `/assets/images/product${(i % 6) + 1}.jpg`,
-                        description: `Описание товара #${i}`,
-                    });
-                }
-                setProducts(productsData);
+                // Получить товары магазина
+                const response: PaginatedResponse<ProductDTO> = await productsApi.getShopProducts(id);
 
-                setLoading(false);
-            } catch {
+                const mappedProducts: Product[] = response.data.map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price,
+                    description: product.description,
+                }));
+
+                setProducts(mappedProducts);
+            } catch (err) {
                 setError(true);
+            } finally {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, [id]);
 
-    const saveDescription = () => {
-        setShop(prev => prev ? { ...prev, description: descDraft } : prev);
-        setDescEditing(false);
-    };
-
     const handleAddToCart = (productId: number) => {
-        alert(`Добавлен в корзину товар с ID: ${productId}`);
+        console.log('Добавить в корзину:', productId);
     };
 
-    if (loading) return (
-        <div className={styles.pageBackground}>
-            <div className={styles.container}>
-                <p className={styles.loading}>Загрузка магазина...</p>
-            </div>
-        </div>
-    );
+    if (loading) {
+        return <div className={styles.pageBackground}><p>Загрузка...</p></div>;
+    }
 
-    if (error || !shop) return (
-        <div className={styles.pageBackground}>
-            <div className={styles.container}>
-                <p className={styles.error}>Ошибка загрузки данных магазина.</p>
-                <Link to="/" className={styles.homeLink}>На главную</Link>
-            </div>
-        </div>
-    );
+    if (error || !shop) {
+        return <div className={styles.pageBackground}><p>Ошибка загрузки магазина</p></div>;
+    }
 
     return (
         <div className={styles.pageBackground}>
             <div className={styles.container}>
-                <Link to="/" className={styles.backLink}>← Назад</Link>
+                <Link to="/" className={styles.backLink}>
+                    ← Назад
+                </Link>
 
                 <div className={styles.shopHeader}>
-                    <img src={shop.avatarUrl} alt={`${shop.name} аватар`} className={styles.shopAvatar} />
+                    <img src={shop.avatarUrl} alt={shop.name} className={styles.shopAvatar} />
                     <h1 className={styles.shopName}>{shop.name}</h1>
                 </div>
 
                 <div className={styles.shopDescription}>
-                    {descEditing && (isModerator || isSeller) ? (
-                        <>
-              <textarea
-                  className={styles.descriptionTextarea}
-                  value={descDraft}
-                  onChange={(e) => setDescDraft(e.target.value)}
-              />
-                            <div className={styles.descriptionButtons}>
-                                <button onClick={saveDescription} className={styles.saveButton}>Сохранить</button>
-                                <button onClick={() => { setDescEditing(false); setDescDraft(shop.description); }} className={styles.cancelButton}>Отмена</button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <p>{shop.description}</p>
-                            {(isModerator || isSeller) && (
-                                <button onClick={() => setDescEditing(true)} className={styles.editButton}>Редактировать описание</button>
-                            )}
-                        </>
-                    )}
+                    <p>{shop.description}</p>
+                    {isOwner && <button>Редактировать описание</button>}
                 </div>
 
                 <div className={styles.gridWrapper}>
-                    <ProductGridPageable
-                        products={products}
-                        onAddToCart={handleAddToCart}
-                    />
+                    <ProductGridPageable products={products} onAddToCart={handleAddToCart} />
                 </div>
             </div>
         </div>

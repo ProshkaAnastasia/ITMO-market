@@ -1,43 +1,52 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styles from '../styles/Search.module.css';
 import ProductGridPageable, { Product } from '../components/ProductGridPageable';
+import { productsApi } from '../api/productsApi';
+import { PaginatedResponse, ProductDTO } from '../types/dto';
 
 const Search: React.FC = () => {
+    const [searchParams] = useSearchParams();
+    const keywords = searchParams.get('q') || '';
+
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState(keywords);
 
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
-            await new Promise(res => setTimeout(res, 300));
+            setError(null);
+            try {
+                const response: PaginatedResponse<ProductDTO> = searchTerm
+                    ? await productsApi.searchProducts(searchTerm)
+                    : await productsApi.getProducts();
 
-            const totalProducts = 100;
-            const items: Product[] = [];
-            for (let i = 1; i <= totalProducts; i++) {
-                items.push({
-                    id: i,
-                    name: `Товар #${i}`,
-                    image: `/assets/images/product${(i % 6) + 1}.jpg`,
-                    price: Math.round(1000 + Math.random() * 5000),
-                    description: `Описание товара #${i}`,
-                });
+                // Маппим ProductDTO на Product для компонента
+                const mappedProducts: Product[] = response.data.map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price,
+                    description: product.description,
+                }));
+
+                setProducts(mappedProducts);
+            } catch (err: any) {
+                setError(err.response?.data?.message || 'Ошибка загрузки товаров');
+                setProducts([]);
+            } finally {
+                setLoading(false);
             }
-
-            // Фильтрация по searchTerm
-            const filteredItems = items.filter(p =>
-                p.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            setProducts(filteredItems);
-            setLoading(false);
         };
 
         fetchProducts();
     }, [searchTerm]);
 
     const handleAddToCart = (id: number) => {
-        alert(`Добавлен товар ${id}`);
+        // TODO: Добавить в корзину
+        console.log('Добавить в корзину:', id);
     };
 
     return (
@@ -53,11 +62,12 @@ const Search: React.FC = () => {
 
             {loading ? (
                 <p>Загрузка...</p>
+            ) : error ? (
+                <p className={styles.error}>{error}</p>
+            ) : products.length === 0 ? (
+                <p>Товаров не найдено</p>
             ) : (
-                <ProductGridPageable
-                    products={products}
-                    onAddToCart={handleAddToCart}
-                />
+                <ProductGridPageable products={products} onAddToCart={handleAddToCart} />
             )}
         </div>
     );

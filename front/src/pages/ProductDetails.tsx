@@ -1,60 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/ProductDetails.module.css';
-
-interface Shop {
-    id: string;
-    name: string;
-}
-
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    features: string[];
-    price: number;
-    image: string;
-    shop: Shop;
-}
+import { productsApi } from '../api/productsApi';
+import { ProductDTO } from '../types/dto';
 
 interface ProductDetailsProps {
-    productId: number;
     onAddToCart: (productId: number) => void;
 }
 
 /**
  * Компонент для отображения деталей товара.
- * Загружает данные асинхронно и отображает их.
+ * Загружает данные асинхронно с backend'а по ID из URL.
  */
-const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onAddToCart }) => {
-    const [product, setProduct] = useState<Product | null>(null);
+const ProductDetails: React.FC<ProductDetailsProps> = ({ onAddToCart }) => {
+    // ИСПРАВЛЕНИЕ: читаем ID из URL параметров
+    const { id } = useParams<{ id: string }>();
+
+    const [product, setProduct] = useState<ProductDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
+        if (!id) {
+            setError(true);
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         setError(false);
 
         const fetchProduct = async () => {
             try {
-                // Эмуляция задержки и заглушка данных
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                if (productId === -1) throw new Error('Product not found');
-
-                setProduct({
-                    id: productId,
-                    name: 'Футболка ИТМО',
-                    description: 'Качественная футболка с логотипом ИТМО.',
-                    features: ['100% хлопок', 'Дышащий материал', 'Доступна в разных размерах'],
-                    price: 1200,
-                    image: '/assets/images/product1_large.jpg',
-                    shop: {
-                        id: '1',
-                        name: 'ITMO-Маркет'
-                    }
-                });
-
-            } catch {
+                // ИСПРАВЛЕНИЕ: используем реальный API вместо mock'а
+                const productId = parseInt(id, 10);
+                const data = await productsApi.getProduct(productId);
+                setProduct(data);
+            } catch (err) {
+                console.error('Failed to fetch product:', err);
                 setError(true);
             } finally {
                 setLoading(false);
@@ -62,7 +45,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onAddToCart 
         };
 
         fetchProduct();
-    }, [productId]);
+    }, [id]);
 
     if (loading) {
         return (
@@ -99,20 +82,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onAddToCart 
                     <h1 className={styles.productName}>{product.name}</h1>
 
                     <p className={styles.shopLink}>
-                        Продавец:{' '}
-                        <Link to={`/shop/${product.shop.id}`} className={styles.shopLink}>
-                            {product.shop.name}
+                        Магазин:{' '}
+                        <Link to={`/shop/${product.shopId}`} className={styles.shopLink}>
+                            Переход в магазин
                         </Link>
                     </p>
 
                     <p className={styles.description}>{product.description}</p>
-                    <ul className={styles.features}>
-                        {product.features.map((feature, index) => (
-                            <li key={index} className={styles.featureItem}>
-                                {feature}
-                            </li>
-                        ))}
-                    </ul>
 
                     <div className={styles.price}>Цена: {product.price} ₽</div>
 

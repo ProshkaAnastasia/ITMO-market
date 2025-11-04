@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { LoginRequest, RegisterRequest, AuthUser, TokenResponse } from '../types/dto';
 import { authApi } from '../api/authApi';
+import { usersApi } from '../api/usersApi'; // Нужно создать!
 
 interface AuthContextType {
     user: AuthUser | null;
@@ -23,24 +24,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Инициализация при загрузке приложения
     useEffect(() => {
         const initAuth = () => {
-            const storedUser = localStorage.getItem('user');
             const token = localStorage.getItem('accessToken');
 
-            if (storedUser && token) {
-                try {
-                    setUser(JSON.parse(storedUser));
-                } catch (e) {
-                    console.error('Failed to parse stored user', e);
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
-                }
+            if (token) {
+                // Если есть токен, загружаем данные пользователя
+                fetchUserData();
+            } else {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         initAuth();
     }, []);
+
+    const fetchUserData = async () => {
+        try {
+            // ГЛАВНОЕ ИСПРАВЛЕНИЕ: загружаем данные пользователя с backend'а
+            const userData = await usersApi.getMe();
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+            setError(null);
+        } catch (err) {
+            console.error('Failed to fetch user data:', err);
+            // Если не удалось загрузить - очищаем токены
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const login = async (credentials: LoginRequest) => {
         setLoading(true);
@@ -52,9 +66,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem('accessToken', tokenResponse.accessToken);
             localStorage.setItem('refreshToken', tokenResponse.refreshToken);
 
-            // TODO: Получить данные пользователя после логина
-            // Пока предполагаем, что backend вернет user info вместе с токенами
-            // или нам нужен отдельный запрос GET /api/users для получения данных
+            // ИСПРАВЛЕНИЕ: загружаем данные пользователя ПОСЛЕ логина
+            await fetchUserData();
 
             setLoading(false);
         } catch (err: any) {
@@ -74,6 +87,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem('accessToken', tokenResponse.accessToken);
             localStorage.setItem('refreshToken', tokenResponse.refreshToken);
 
+            // ИСПРАВЛЕНИЕ: загружаем данные пользователя ПОСЛЕ регистрации
+            await fetchUserData();
+
             setLoading(false);
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Ошибка при регистрации';
@@ -92,11 +108,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setError(null);
     };
 
+    // ИСПРАВЛЕНИЕ: isAuthenticated зависит от токена И наличия user
+    const isAuthenticated = !!localStorage.getItem('accessToken') && !!user;
+
     return (
         <AuthContext.Provider
             value={{
                 user,
-                isAuthenticated: !!user && !!localStorage.getItem('accessToken'),
+                isAuthenticated,
                 loading,
                 error,
                 login,
