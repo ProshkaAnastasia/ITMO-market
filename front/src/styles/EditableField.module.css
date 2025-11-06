@@ -1,0 +1,74 @@
+.editableField {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 18px;
+    color: #34495e;
+}
+
+.fieldLabel {
+    font-weight: 700;
+    min-width: 110px;
+    user-select: none;
+}
+
+.fieldValue {
+    flex-grow: 1;
+}
+
+/* Обёртка для иконки карандаша, отдельно для ховер/фокус */
+.editIconWrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    color: #667eea;
+    transition: color 0.3s ease;
+    user-select: none;
+    margin-left: 8px;
+}
+
+.editIconWrapper:hover,
+.editIconWrapper:focus {
+    color: #3344cc;
+    outline: none;
+}
+
+.inputText {
+    flex-grow: 1;
+    font-size: 18px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    outline-offset: 2px;
+}
+
+.saveButton,
+.cancelButton {
+    margin-left: 8px;
+    padding: 6px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.saveButton {
+    background-color: #5a67d8;
+    color: white;
+    font-weight: 700;
+}
+
+.saveButton:hover {
+    background-color: #3344cc;
+}
+
+.cancelButton {
+    background-color: #bbb;
+    color: #333;
+}
+
+.cancelButton:hover {
+    background-color: #888;
+}

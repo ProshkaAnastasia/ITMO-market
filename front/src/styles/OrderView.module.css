@@ -1,0 +1,191 @@
+.pageBackground {
+    background-color: #f7f9fc;
+    min-height: 100vh;
+    padding: 40px 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1200px;
+    background: white;
+    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+    padding: 32px 40px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    color: #2c3e50;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.empty {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 40px;
+    color: #777;
+}
+
+.itemsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.cartItem {
+    display: flex;
+    gap: 24px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    align-items: center;
+}
+
+.productImage {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.productInfo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.productName {
+    margin: 0;
+    font-weight: 600;
+    font-size: 20px;
+    color: #34495e;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.qtyLabel {
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qtyInput {
+    width: 60px;
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    outline-offset: 2px;
+}
+
+.removeButton {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    transition: color 0.3s ease;
+    line-height: 1;
+    padding: 0;
+}
+
+.removeButton:hover {
+    color: #c0392b;
+}
+
+.priceRow {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 17px;
+    color: #2c3e50;
+}
+
+.delivery {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.addressLabel {
+    font-weight: 600;
+    font-size: 16px;
+    color: #34495e;
+}
+
+.addressInput {
+    font-size: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    width: 100%;
+    box-sizing: border-box;
+    outline-offset: 2px;
+}
+
+.error {
+    color: #e74c3c;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.totalSum {
+    font-weight: 700;
+    font-size: 22px;
+    text-align: right;
+    margin-bottom: 24px;
+    color: #2c3e50;
+}
+
+.payButton {
+    background-color: #5a67d8;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    padding: 14px 0;
+    border-radius: 12px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.payButton:disabled {
+    cursor: not-allowed;
+    background-color: #bbb;
+}
+
+.payButton:not(:disabled):hover {
+    background-color: #4346bf;
+}
+
+.staticQuantity {
+    font-weight: 500;
+    font-size: 16px;
+    color: #555;
+}
+
+.staticAddress {
+    font-size: 16px;
+    color: #333;
+    padding: 8px 12px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}

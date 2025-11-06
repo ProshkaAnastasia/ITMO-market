@@ -1,0 +1,64 @@
+.nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #eee;
+}
+
+.leftSection {
+    grid-column: 2;
+    justify-self: center;
+}
+
+.logo {
+    white-space: nowrap; /* чтобы не переносить на новую строку */
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.logoImage {
+    display: inline-block;
+    vertical-align: middle;
+    width: 80px;
+    height: auto;
+}
+
+.logoText {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 3px;
+    line-height: normal;
+}
+
+.rightSection {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 20px;
+    justify-self: end;
+    align-items: center;
+}
+
+.iconLink {
+    color: black;
+    position: relative;
+    text-decoration: none;
+}
+
+.cartCount {
+    position: absolute;
+    bottom: -2.5px;
+    right: -2.5px;
+    background-color: white;
+    color: black;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 10px;
+    font-weight: bold;
+}

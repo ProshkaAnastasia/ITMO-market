@@ -1,0 +1,57 @@
+:root {
+    --card-width: 220px;
+    --unique-cards-number: 6;
+    --card-gap: 12px;
+    --animation-duration: 30s;
+}
+
+.galleryWrapper {
+    width: 100vw;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e0f7fa, #80deea);
+    box-sizing: border-box;
+    padding: 10px 0;
+}
+
+/* Общие стили обоих рядов */
+.galleryTop,
+.galleryBottom {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: var(--card-width); /* квадратный размер */
+    grid-auto-columns: var(--card-width);
+    gap: var(--card-gap);
+    width: 100%;
+    user-select: none;
+    box-sizing: content-box;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: var(--animation-duration);
+}
+
+.galleryTop {
+    animation-name: scrollLeft;
+}
+
+.galleryBottom {
+    margin-top: 12px;
+    animation-name: scrollRight;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc((var(--card-width) + var(--card-gap)) * var(--unique-cards-number) * -1));
+    }
+}
+
+@keyframes scrollRight {
+    0% {
+        transform: translateX(calc((var(--card-width) + var(--card-gap)) * var(--unique-cards-number) * -1));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
